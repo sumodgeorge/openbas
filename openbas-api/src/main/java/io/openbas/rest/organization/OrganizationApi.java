@@ -22,7 +22,6 @@ import java.util.List;
 import static io.openbas.config.SessionHelper.currentUser;
 import static io.openbas.database.model.User.ROLE_ADMIN;
 import static io.openbas.helper.StreamHelper.fromIterable;
-import static io.openbas.helper.StreamHelper.iterableToSet;
 import static java.time.Instant.now;
 
 @RestController
@@ -71,7 +70,7 @@ public class OrganizationApi extends RestBehavior {
   public Organization createOrganization(@Valid @RequestBody OrganizationCreateInput input) {
     Organization organization = new Organization();
     organization.setUpdateAttributes(input);
-    organization.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+    organization.setTags(fromIterable(tagRepository.findAllById(input.getTagIds())));
     return organizationRepository.save(organization);
   }
 
@@ -83,7 +82,7 @@ public class OrganizationApi extends RestBehavior {
     Organization organization = organizationRepository.findById(organizationId).orElseThrow(ElementNotFoundException::new);
     organization.setUpdateAttributes(input);
     organization.setUpdatedAt(now());
-    organization.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+    organization.setTags(fromIterable(tagRepository.findAllById(input.getTagIds())));
     return organizationRepository.save(organization);
   }
 

@@ -5,13 +5,13 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.openbas.database.model.Scenario;
 import io.openbas.database.model.Tag;
 import io.openbas.database.raw.RawScenario;
-import io.openbas.helper.MultiIdSetDeserializer;
+import io.openbas.helper.MultiIdDeserializer;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
@@ -26,9 +26,9 @@ public class ScenarioSimple {
   @JsonProperty("scenario_subtitle")
   private String subtitle;
 
-  @JsonSerialize(using = MultiIdSetDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("scenario_tags")
-  private Set<Tag> tags = new HashSet<>();
+  private List<Tag> tags = new ArrayList<>();
 
   public static ScenarioSimple fromScenario(@NotNull final Scenario scenario) {
     ScenarioSimple simple = new ScenarioSimple();
@@ -47,9 +47,9 @@ public class ScenarioSimple {
                 tag.setId(tagId);
                 return tag;
               }
-      ).collect(Collectors.toSet()));
+      ).collect(Collectors.toList()));
     } else {
-      simple.setTags(new HashSet<>());
+      simple.setTags(new ArrayList<>());
     }
     return simple;
   }

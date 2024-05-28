@@ -6,8 +6,7 @@ import io.hypersistence.utils.hibernate.type.json.JsonType;
 import io.openbas.annotation.Queryable;
 import io.openbas.database.audit.ModelBaseListener;
 import io.openbas.database.model.Filters.FilterGroup;
-import io.openbas.helper.MultiIdListDeserializer;
-import io.openbas.helper.MultiIdSetDeserializer;
+import io.openbas.helper.MultiIdDeserializer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -16,7 +15,9 @@ import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import static java.time.Instant.now;
 import static lombok.AccessLevel.NONE;
@@ -25,15 +26,6 @@ import static lombok.AccessLevel.NONE;
 @Entity
 @Table(name = "asset_groups")
 @EntityListeners(ModelBaseListener.class)
-@NamedEntityGraphs({
-    @NamedEntityGraph(
-        name = "AssetGroup.tags-assets",
-        attributeNodes = {
-            @NamedAttributeNode("tags"),
-            @NamedAttributeNode("assets")
-        }
-    )
-})
 public class AssetGroup implements Base {
 
   @Id
@@ -66,7 +58,7 @@ public class AssetGroup implements Base {
   @JoinTable(name = "asset_groups_assets",
       joinColumns = @JoinColumn(name = "asset_group_id"),
       inverseJoinColumns = @JoinColumn(name = "asset_id"))
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("asset_group_assets")
   private List<Asset> assets = new ArrayList<>();
 
@@ -76,7 +68,7 @@ public class AssetGroup implements Base {
   private List<Asset> dynamicAssets = new ArrayList<>();
 
   // Getter is Mandatory when we use @Transient annotation
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   public List<Asset> getDynamicAssets() {
     return this.dynamicAssets;
   }
@@ -87,10 +79,10 @@ public class AssetGroup implements Base {
   @JoinTable(name = "asset_groups_tags",
       joinColumns = @JoinColumn(name = "asset_group_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  @JsonSerialize(using = MultiIdSetDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("asset_group_tags")
   @Queryable(sortable = true)
-  private Set<Tag> tags = new HashSet<>();
+  private List<Tag> tags = new ArrayList<>();
 
   // -- AUDIT --
 

@@ -5,16 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.openbas.annotation.Queryable;
 import io.openbas.database.audit.ModelBaseListener;
-import io.openbas.helper.MultiIdListDeserializer;
-import io.openbas.helper.MultiIdSetDeserializer;
-import jakarta.persistence.*;
+import io.openbas.helper.MultiIdDeserializer;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.*;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.time.Instant.now;
@@ -53,15 +52,13 @@ public class Organization implements Base {
     @JsonIgnore
     private List<User> users = new ArrayList<>();
 
-    @Setter
-    @Getter
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "organizations_tags",
             joinColumns = @JoinColumn(name = "organization_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    @JsonSerialize(using = MultiIdSetDeserializer.class)
+    @JsonSerialize(using = MultiIdDeserializer.class)
     @JsonProperty("organization_tags")
-    private Set<Tag> tags = new HashSet<>();
+    private List<Tag> tags = new ArrayList<>();
 
     // region transient
     private transient List<Inject> injects = new ArrayList<>();
@@ -75,7 +72,7 @@ public class Organization implements Base {
     }
 
     @JsonProperty("organization_injects")
-    @JsonSerialize(using = MultiIdListDeserializer.class)
+    @JsonSerialize(using = MultiIdDeserializer.class)
     public List<Inject> getOrganizationInject() {
         return injects;
     }
@@ -131,7 +128,15 @@ public class Organization implements Base {
         this.updatedAt = updatedAt;
     }
 
-  public List<User> getUsers() {
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public List<User> getUsers() {
         return users;
     }
 

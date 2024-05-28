@@ -24,9 +24,6 @@ import ImportUploaderScenario from './ImportUploaderScenario';
 import { buildEmptyFilter } from '../../../components/common/filter/FilterUtils';
 import { scenarioCategories } from './ScenarioForm';
 import ScenarioStatus from './scenario/ScenarioStatus';
-import useDataLoader from '../../../utils/hooks/useDataLoader';
-import { fetchTags } from '../../../actions/Tag';
-import { useAppDispatch } from '../../../utils/hooks';
 import usePaginationAndFilter from '../../../components/common/usePaginationAndFilter';
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -97,17 +94,12 @@ const inlineStyles: Record<string, CSSProperties> = {
 
 const Scenarios = () => {
   // Standard hooks
-  const dispatch = useAppDispatch();
   const classes = useStyles();
   const { t, nsdt } = useFormatter();
-
   // Fetching data
   const { userAdmin } = useHelper((helper: TagHelper & UserHelper) => ({
     userAdmin: helper.getMe()?.user_admin ?? false,
   }));
-  useDataLoader(() => {
-    dispatch(fetchTags());
-  });
 
   // Headers
   const headers = [
@@ -161,7 +153,6 @@ const Scenarios = () => {
 
   const categoryCard = (category: string, count: number) => (
     <Card
-      key={category}
       classes={{ root: classes.card }} variant="outlined"
       onClick={() => handleOnClickCategory(category)}
       className={classNames({ [classes.cardSelected]: hasCategory(category) })}

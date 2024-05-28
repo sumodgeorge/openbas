@@ -19,7 +19,6 @@ import SortHeadersComponent from '../../../components/common/pagination/SortHead
 import type { UserStore } from './players/Player';
 import type { SearchPaginationInput } from '../../../utils/api-types';
 import { useAppDispatch } from '../../../utils/hooks';
-import { fetchTags } from '../../../actions/Tag';
 
 const useStyles = makeStyles(() => ({
   itemHeader: {
@@ -96,7 +95,6 @@ const Players = () => {
   }));
 
   useDataLoader(() => {
-    dispatch(fetchTags());
     dispatch(fetchOrganizations());
   });
 

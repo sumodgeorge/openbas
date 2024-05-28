@@ -1,12 +1,12 @@
 package io.openbas.database.raw;
 
-import java.util.Set;
+import java.util.List;
 
 public interface RawScenario {
 
     public String getScenario_id();
     public String getScenario_name();
     public String getScenario_subtitle();
-    public Set<String> getScenario_tags();
+    public List<String> getScenario_tags();
 
 }

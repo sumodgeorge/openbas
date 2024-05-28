@@ -2,11 +2,7 @@ package io.openbas.database.repository;
 
 import io.openbas.database.model.Team;
 import io.openbas.database.raw.RawTeam;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.repository.EntityGraph;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -46,9 +42,5 @@ public interface TeamRepository extends CrudRepository<Team, String>,
           "FROM teams " +
           "WHERE team_id IN :ids ;", nativeQuery = true)
   List<RawTeam> rawTeamByIds(@Param("ids") List<String> ids);
-
-  @NotNull
-  @EntityGraph(value = "Team.tags", type = EntityGraph.EntityGraphType.LOAD)
-  Page<Team> findAll(@NotNull Specification<Team> spec, @NotNull Pageable pageable);
 
 }

@@ -5,30 +5,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.openbas.annotation.Queryable;
 import io.openbas.database.audit.ModelBaseListener;
-import io.openbas.helper.MultiIdSetDeserializer;
-import jakarta.persistence.*;
+import io.openbas.helper.MultiIdDeserializer;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
-import java.util.*;
+import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Setter
 @Getter
 @Entity
 @Table(name = "documents")
 @EntityListeners(ModelBaseListener.class)
-@NamedEntityGraphs({
-    @NamedEntityGraph(
-        name = "Document.tags-scenarios-exercises",
-        attributeNodes = {
-            @NamedAttributeNode("tags"),
-            @NamedAttributeNode("scenarios"),
-            @NamedAttributeNode("exercises")
-        }
-    )
-})
 public class Document implements Base {
 
     @Id
@@ -62,26 +54,26 @@ public class Document implements Base {
     @JoinTable(name = "documents_tags",
             joinColumns = @JoinColumn(name = "document_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    @JsonSerialize(using = MultiIdSetDeserializer.class)
+    @JsonSerialize(using = MultiIdDeserializer.class)
     @JsonProperty("document_tags")
     @Queryable(sortable = true)
-    private Set<Tag> tags = new HashSet<>();
+    private List<Tag> tags = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "exercises_documents",
             joinColumns = @JoinColumn(name = "document_id"),
             inverseJoinColumns = @JoinColumn(name = "exercise_id"))
-    @JsonSerialize(using = MultiIdSetDeserializer.class)
+    @JsonSerialize(using = MultiIdDeserializer.class)
     @JsonProperty("document_exercises")
-    private Set<Exercise> exercises = new HashSet<>();
+    private List<Exercise> exercises = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "scenarios_documents",
         joinColumns = @JoinColumn(name = "document_id"),
         inverseJoinColumns = @JoinColumn(name = "scenario_id"))
-    @JsonSerialize(using = MultiIdSetDeserializer.class)
+    @JsonSerialize(using = MultiIdDeserializer.class)
     @JsonProperty("document_scenarios")
-    private Set<Scenario> scenarios = new HashSet<>();
+    private List<Scenario> scenarios = new ArrayList<>();
 
     @OneToMany(mappedBy = "document", fetch = FetchType.LAZY)
     @JsonIgnore

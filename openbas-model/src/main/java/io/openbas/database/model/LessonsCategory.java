@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.openbas.database.audit.ModelBaseListener;
 import io.openbas.helper.MonoIdDeserializer;
-import io.openbas.helper.MultiIdListDeserializer;
+import io.openbas.helper.MultiIdDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
@@ -66,13 +66,13 @@ public class LessonsCategory implements Base {
     @JoinTable(name = "lessons_categories_teams",
             joinColumns = @JoinColumn(name = "lessons_category_id"),
             inverseJoinColumns = @JoinColumn(name = "team_id"))
-    @JsonSerialize(using = MultiIdListDeserializer.class)
+    @JsonSerialize(using = MultiIdDeserializer.class)
     @JsonProperty("lessons_category_teams")
     private List<Team> teams = new ArrayList<>();
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     @JsonProperty("lessons_category_questions")
-    @JsonSerialize(using = MultiIdListDeserializer.class)
+    @JsonSerialize(using = MultiIdDeserializer.class)
     private List<LessonsQuestion> questions = new ArrayList<>();
 
     // region transient

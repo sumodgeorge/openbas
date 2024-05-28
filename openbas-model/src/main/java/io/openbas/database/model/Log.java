@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.openbas.database.audit.ModelBaseListener;
 import io.openbas.helper.MonoIdDeserializer;
-import io.openbas.helper.MultiIdSetDeserializer;
-import jakarta.persistence.*;
+import io.openbas.helper.MultiIdDeserializer;
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.*;
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import static java.time.Instant.now;
 
@@ -58,9 +58,9 @@ public class Log implements Base {
     @JoinTable(name = "logs_tags",
             joinColumns = @JoinColumn(name = "log_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    @JsonSerialize(using = MultiIdSetDeserializer.class)
+    @JsonSerialize(using = MultiIdDeserializer.class)
     @JsonProperty("log_tags")
-    private Set<Tag> tags = new HashSet<>();
+    private List<Tag> tags = new ArrayList<>();
 
     @Override
     public String getId() {
@@ -108,11 +108,11 @@ public class Log implements Base {
         this.content = content;
     }
 
-    public Set<Tag> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(Set<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 

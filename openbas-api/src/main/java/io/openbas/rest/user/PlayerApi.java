@@ -3,7 +3,6 @@ package io.openbas.rest.user;
 import io.openbas.config.OpenBASPrincipal;
 import io.openbas.config.SessionManager;
 import io.openbas.database.model.*;
-import io.openbas.database.raw.RawPaginationPlayer;
 import io.openbas.database.raw.RawPlayer;
 import io.openbas.database.repository.*;
 import io.openbas.rest.exception.ElementNotFoundException;
@@ -31,7 +30,6 @@ import static io.openbas.config.SessionHelper.currentUser;
 import static io.openbas.database.specification.UserSpecification.accessibleFromOrganizations;
 import static io.openbas.helper.DatabaseHelper.updateRelation;
 import static io.openbas.helper.StreamHelper.fromIterable;
-import static io.openbas.helper.StreamHelper.iterableToSet;
 import static io.openbas.utils.pagination.PaginationUtils.buildPaginationJPA;
 import static java.time.Instant.now;
 
@@ -98,7 +96,7 @@ public class PlayerApi extends RestBehavior {
   }
 
   @PostMapping("/api/players/search")
-  public Page<RawPaginationPlayer> players(@RequestBody @Valid SearchPaginationInput searchPaginationInput) {
+  public Page<User> players(@RequestBody @Valid SearchPaginationInput searchPaginationInput) {
     BiFunction<Specification<User>, Pageable, Page<User>> playersFunction;
     OpenBASPrincipal currentUser = currentUser();
     if (currentUser.isAdmin()) {
@@ -117,7 +115,7 @@ public class PlayerApi extends RestBehavior {
         playersFunction,
         searchPaginationInput,
         User.class
-    ).map(RawPaginationPlayer::new);
+    );
   }
 
   @GetMapping("/api/player/{userId}/communications")
@@ -134,7 +132,7 @@ public class PlayerApi extends RestBehavior {
     checkOrganizationAccess(userRepository, input.getOrganizationId());
     User user = new User();
     user.setUpdateAttributes(input);
-    user.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+    user.setTags(fromIterable(tagRepository.findAllById(input.getTagIds())));
     user.setOrganization(updateRelation(input.getOrganizationId(), user.getOrganization(), organizationRepository));
     User savedUser = userRepository.save(user);
     userService.createUserToken(savedUser);
@@ -153,7 +151,7 @@ public class PlayerApi extends RestBehavior {
       existingUser.setUpdatedAt(now());
       Iterable<String> tags = Stream.concat(existingUser.getTags().stream().map(Tag::getId).toList().stream(),
           input.getTagIds().stream()).distinct().toList();
-      existingUser.setTags(iterableToSet(tagRepository.findAllById(tags)));
+      existingUser.setTags(fromIterable(tagRepository.findAllById(tags)));
       Iterable<String> teams = Stream.concat(existingUser.getTeams().stream().map(Team::getId).toList().stream(),
           input.getTeamIds().stream()).distinct().toList();
       existingUser.setTeams(fromIterable(teamRepository.findAllById(teams)));
@@ -165,7 +163,7 @@ public class PlayerApi extends RestBehavior {
     } else {
       User newUser = new User();
       newUser.setUpdateAttributes(input);
-      newUser.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+      newUser.setTags(fromIterable(tagRepository.findAllById(input.getTagIds())));
       newUser.setOrganization(
           updateRelation(input.getOrganizationId(), newUser.getOrganization(), organizationRepository));
       newUser.setTeams(fromIterable(teamRepository.findAllById(input.getTeamIds())));
@@ -184,7 +182,7 @@ public class PlayerApi extends RestBehavior {
       throw new UnsupportedOperationException("You dont have the right to update this user");
     }
     user.setUpdateAttributes(input);
-    user.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+    user.setTags(fromIterable(tagRepository.findAllById(input.getTagIds())));
     user.setOrganization(updateRelation(input.getOrganizationId(), user.getOrganization(), organizationRepository));
     return userRepository.save(user);
   }

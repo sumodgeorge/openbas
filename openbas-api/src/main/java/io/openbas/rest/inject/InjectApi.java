@@ -14,6 +14,7 @@ import io.openbas.execution.ExecutableInject;
 import io.openbas.execution.ExecutionContext;
 import io.openbas.execution.ExecutionContextService;
 import io.openbas.execution.Executor;
+import io.openbas.inject_expectation.InjectExpectationService;
 import io.openbas.injector_contract.ContractType;
 import io.openbas.rest.atomic_testing.form.InjectResultDTO;
 import io.openbas.rest.exception.ElementNotFoundException;
@@ -44,6 +45,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import static io.openbas.config.SessionHelper.currentUser;
@@ -52,7 +54,6 @@ import static io.openbas.database.specification.CommunicationSpecification.fromI
 import static io.openbas.helper.DatabaseHelper.resolveOptionalRelation;
 import static io.openbas.helper.DatabaseHelper.updateRelation;
 import static io.openbas.helper.StreamHelper.fromIterable;
-import static io.openbas.helper.StreamHelper.iterableToSet;
 import static io.openbas.rest.scenario.ScenarioApi.SCENARIO_URI;
 import static io.openbas.utils.AtomicTestingUtils.getTargets;
 import static io.openbas.utils.pagination.PaginationUtils.buildPaginationJPA;
@@ -328,7 +329,7 @@ public class InjectApi extends RestBehavior {
         inject.setTeams(fromIterable(teamRepository.findAllById(input.getTeams())));
         inject.setAssets(fromIterable(assetService.assets(input.getAssets())));
         inject.setAssetGroups(fromIterable(assetGroupService.assetGroups(input.getAssetGroups())));
-    inject.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+        inject.setTags(fromIterable(tagRepository.findAllById(input.getTagIds())));
         List<InjectDocument> injectDocuments = input.getDocuments().stream()
                 .map(i -> {
                     InjectDocument injectDocument = new InjectDocument();
@@ -463,7 +464,7 @@ public class InjectApi extends RestBehavior {
         inject.setTeams(fromIterable(teamRepository.findAllById(input.getTeams())));
         inject.setAssets(fromIterable(assetService.assets(input.getAssets())));
         inject.setAssetGroups(fromIterable(assetGroupService.assetGroups(input.getAssetGroups())));
-    inject.setTags(iterableToSet(tagRepository.findAllById(input.getTagIds())));
+        inject.setTags(fromIterable(tagRepository.findAllById(input.getTagIds())));
         List<InjectDocument> injectDocuments = input.getDocuments().stream()
                 .map(i -> {
                     InjectDocument injectDocument = new InjectDocument();
@@ -547,7 +548,7 @@ public class InjectApi extends RestBehavior {
         inject.setTeams(fromIterable(this.teamRepository.findAllById(input.getTeams())));
         inject.setAssets(fromIterable(this.assetService.assets(input.getAssets())));
         inject.setAssetGroups(fromIterable(this.assetGroupService.assetGroups(input.getAssetGroups())));
-    inject.setTags(iterableToSet(this.tagRepository.findAllById(input.getTagIds())));
+        inject.setTags(fromIterable(this.tagRepository.findAllById(input.getTagIds())));
 
         // Set documents
         List<InjectDocumentInput> inputDocuments = input.getDocuments();

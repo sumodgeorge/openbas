@@ -6,7 +6,7 @@ import io.openbas.database.model.Exercise;
 import io.openbas.database.model.Inject;
 import io.openbas.database.model.Tag;
 import io.openbas.database.raw.RawExercise;
-import io.openbas.helper.MultiIdSetDeserializer;
+import io.openbas.helper.MultiIdDeserializer;
 import io.openbas.rest.atomic_testing.form.InjectTargetWithResult;
 import io.openbas.utils.AtomicTestingMapper;
 import io.openbas.utils.AtomicTestingUtils;
@@ -20,9 +20,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static io.openbas.utils.ResultUtils.computeGlobalExpectationResults;
@@ -53,9 +51,9 @@ public class ExerciseSimple {
   @JsonProperty("exercise_start_date")
   private Instant start;
 
-  @JsonSerialize(using = MultiIdSetDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("exercise_tags")
-  private Set<Tag> tags = new HashSet<>();
+  private List<Tag> tags = new ArrayList<>();
 
   @JsonProperty("exercise_global_score")
   private List<AtomicTestingMapper.ExpectationResultsByType> expectationResultByTypes = new ArrayList<>();
@@ -89,9 +87,9 @@ public class ExerciseSimple {
           tag.setId(tagId);
           return tag;
         }
-      ).collect(Collectors.toSet()));
+      ).collect(Collectors.toList()));
     } else {
-      simple.setTags(new HashSet<>());
+      simple.setTags(new ArrayList<>());
     }
     simple.setCategory(exercise.getExercise_category());
     simple.setSubtitle(exercise.getExercise_subtitle());

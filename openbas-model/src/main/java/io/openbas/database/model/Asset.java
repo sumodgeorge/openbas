@@ -5,8 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.openbas.annotation.Queryable;
 import io.openbas.database.audit.ModelBaseListener;
 import io.openbas.helper.MonoIdDeserializer;
-import io.openbas.helper.MultiIdListDeserializer;
-import io.openbas.helper.MultiIdSetDeserializer;
+import io.openbas.helper.MultiIdDeserializer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -14,10 +13,9 @@ import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import static jakarta.persistence.DiscriminatorType.STRING;
 import static java.time.Instant.now;
@@ -79,9 +77,9 @@ public class Asset implements Base {
   @JoinTable(name = "assets_tags",
       joinColumns = @JoinColumn(name = "asset_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  @JsonSerialize(using = MultiIdSetDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("asset_tags")
-  private Set<Tag> tags = new HashSet<>();
+  private List<Tag> tags = new ArrayList<>();
 
   @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "asset_executor")
@@ -97,7 +95,7 @@ public class Asset implements Base {
 
   @OneToMany(fetch = FetchType.EAGER)
   @JoinColumn(name = "asset_parent")
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("asset_children")
   private List<Asset> children;
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.openbas.database.audit.ModelBaseListener;
 import io.openbas.helper.MonoIdDeserializer;
-import io.openbas.helper.MultiIdListDeserializer;
+import io.openbas.helper.MultiIdDeserializer;
 import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.*;
@@ -54,7 +54,7 @@ public class LessonsTemplateCategory implements Base {
 
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
     @JsonProperty("lessons_template_category_questions")
-    @JsonSerialize(using = MultiIdListDeserializer.class)
+    @JsonSerialize(using = MultiIdDeserializer.class)
     private List<LessonsTemplateQuestion> questions = new ArrayList<>();
 
     @Override

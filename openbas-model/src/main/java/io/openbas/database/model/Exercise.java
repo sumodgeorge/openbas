@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.openbas.annotation.Queryable;
 import io.openbas.database.audit.ModelBaseListener;
-import io.openbas.helper.*;
+import io.openbas.helper.InjectStatisticsHelper;
+import io.openbas.helper.MonoIdDeserializer;
+import io.openbas.helper.MultiIdDeserializer;
+import io.openbas.helper.MultiModelDeserializer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -169,7 +172,7 @@ public class Exercise implements Base {
 
   @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY)
   @JsonProperty("exercise_injects")
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   private List<Inject> injects = new ArrayList<>();
 
   @Getter
@@ -177,7 +180,7 @@ public class Exercise implements Base {
   @JoinTable(name = "exercises_teams",
       joinColumns = @JoinColumn(name = "exercise_id"),
       inverseJoinColumns = @JoinColumn(name = "team_id"))
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("exercise_teams")
   private List<Team> teams = new ArrayList<>();
 
@@ -200,7 +203,7 @@ public class Exercise implements Base {
   @Getter
   @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY)
   @JsonProperty("exercise_pauses")
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   private List<Pause> pauses = new ArrayList<>();
 
   @Getter
@@ -208,28 +211,28 @@ public class Exercise implements Base {
   @JoinTable(name = "exercises_tags",
       joinColumns = @JoinColumn(name = "exercise_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  @JsonSerialize(using = MultiIdSetDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("exercise_tags")
-  private Set<Tag> tags = new HashSet<>();
+  private List<Tag> tags = new ArrayList<>();
 
   @Getter
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "exercises_documents",
       joinColumns = @JoinColumn(name = "exercise_id"),
       inverseJoinColumns = @JoinColumn(name = "document_id"))
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("exercise_documents")
   private List<Document> documents = new ArrayList<>();
 
   @Getter
   @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY)
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("exercise_articles")
   private List<Article> articles = new ArrayList<>();
 
   @Getter
   @OneToMany(mappedBy = "exercise", fetch = FetchType.LAZY)
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("exercise_lessons_categories")
   private List<LessonsCategory> lessonsCategories = new ArrayList<>();
 
@@ -246,13 +249,13 @@ public class Exercise implements Base {
   }
 
   @JsonProperty("exercise_planners")
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   public List<User> getPlanners() {
     return getUsersByType(this.getGrants(), PLANNER);
   }
 
   @JsonProperty("exercise_observers")
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   public List<User> getObservers() {
     return getUsersByType(this.getGrants(), PLANNER, OBSERVER);
   }
@@ -283,7 +286,7 @@ public class Exercise implements Base {
   }
 
   @JsonProperty("exercise_users")
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   public List<User> getUsers() {
     return getTeamUsers().stream().map(ExerciseTeamUser::getUser).distinct().toList();
   }

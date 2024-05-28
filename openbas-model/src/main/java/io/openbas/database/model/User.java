@@ -6,8 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.openbas.annotation.Queryable;
 import io.openbas.database.audit.ModelBaseListener;
 import io.openbas.helper.MonoIdDeserializer;
-import io.openbas.helper.MultiIdListDeserializer;
-import io.openbas.helper.MultiIdSetDeserializer;
+import io.openbas.helper.MultiIdDeserializer;
 import io.openbas.helper.UserHelper;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -17,7 +16,10 @@ import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.time.Instant.now;
@@ -29,15 +31,6 @@ import static lombok.AccessLevel.NONE;
 @Entity
 @Table(name = "users")
 @EntityListeners(ModelBaseListener.class)
-@NamedEntityGraphs({
-    @NamedEntityGraph(
-        name = "Player.tags-organization",
-        attributeNodes = {
-            @NamedAttributeNode("tags"),
-            @NamedAttributeNode("organization")
-        }
-    )
-})
 public class User implements Base {
 
   public static final String ADMIN_UUID = "89206193-dbfb-4513-a186-d72c037dda4c";
@@ -152,7 +145,7 @@ public class User implements Base {
   @JoinTable(name = "users_groups",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "group_id"))
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("user_groups")
   private List<Group> groups = new ArrayList<>();
 
@@ -161,7 +154,7 @@ public class User implements Base {
   @JoinTable(name = "users_teams",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "team_id"))
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("user_teams")
   private List<Team> teams = new ArrayList<>();
 
@@ -170,17 +163,17 @@ public class User implements Base {
   @JoinTable(name = "users_tags",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  @JsonSerialize(using = MultiIdSetDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("user_tags")
   @Queryable(sortable = true)
-  private Set<Tag> tags = new HashSet<>();
+  private List<Tag> tags = new ArrayList<>();
 
   @Setter
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(name = "communications_users",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "communication_id"))
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   @JsonProperty("user_communications")
   private List<Communication> communications = new ArrayList<>();
 
@@ -221,7 +214,7 @@ public class User implements Base {
   }
 
   @JsonProperty("user_injects")
-  @JsonSerialize(using = MultiIdListDeserializer.class)
+  @JsonSerialize(using = MultiIdDeserializer.class)
   public List<Inject> getUserInject() {
     return this.injects;
   }

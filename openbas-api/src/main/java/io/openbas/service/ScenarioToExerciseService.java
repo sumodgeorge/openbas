@@ -6,6 +6,7 @@ import io.openbas.database.model.*;
 import io.openbas.database.repository.*;
 import io.openbas.injectors.channel.ChannelContract;
 import io.openbas.injectors.channel.model.ChannelContent;
+import io.openbas.service.VariableService;
 import jakarta.annotation.Nullable;
 import jakarta.annotation.Resource;
 import jakarta.validation.constraints.NotBlank;
@@ -17,7 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -270,21 +274,6 @@ public class ScenarioToExerciseService {
         return destinations;
     }
 
-  private <T extends Base> Set<T> copy(@NotNull final Set<T> origins, Class<T> clazz) {
-    Set<T> destinations = new HashSet<>();
-    origins.forEach(origin -> {
-      try {
-        T destination = clazz.getDeclaredConstructor().newInstance();
-        BeanUtils.copyProperties(destination, origin);
-        destinations.add(destination);
-      } catch (IllegalAccessException | InvocationTargetException | InstantiationException |
-               NoSuchMethodException e) {
-        throw new RuntimeException(e);
-      }
-    });
-    return destinations;
-  }
-
     private List<Document> addExerciseToDocuments(
             @NotNull final List<Document> origDocuments,
             @NotNull final Exercise exercise) {
@@ -293,7 +282,7 @@ public class ScenarioToExerciseService {
             try {
                 Document destDocument = new Document();
                 BeanUtils.copyProperties(destDocument, origDocument);
-                Set<Exercise> exercises = destDocument.getExercises();
+                List<Exercise> exercises = destDocument.getExercises();
                 exercises.add(exercise);
                 destDocument.setExercises(exercises);
                 destDocuments.add(destDocument);
