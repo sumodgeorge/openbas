@@ -3931,6 +3931,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/query-core@npm:5.40.0":
+  version: 5.40.0
+  resolution: "@tanstack/query-core@npm:5.40.0"
+  checksum: 10c0/8ed200657dcdc1c05a44571be07e7a9d9a6c19c4ac067560bfb9d065a9cfb3e0dbbd0c44c17814272fd0b8d559030e9f4b50fb917c4312bbe61c9848767fde38
+  languageName: node
+  linkType: hard
+
+"@tanstack/react-query@npm:^5.40.1":
+  version: 5.40.1
+  resolution: "@tanstack/react-query@npm:5.40.1"
+  dependencies:
+    "@tanstack/query-core": "npm:5.40.0"
+  peerDependencies:
+    react: ^18.0.0
+  checksum: 10c0/1585b29127762a57181b0c9bc79711eed08dd6d108441d092a568cd094774ee367d896e885cc92d7ca2fd424c95225c347db4b4e2e62718e665272c1f199bf03
+  languageName: node
+  linkType: hard
+
 "@testing-library/dom@npm:^9.0.0":
   version: 9.3.4
   resolution: "@testing-library/dom@npm:9.3.4"
@@ -11873,6 +11891,7 @@ __metadata:
     "@playwright/test": "npm:1.44.1"
     "@redux-devtools/extension": "npm:3.3.0"
     "@stylistic/eslint-plugin": "npm:1.8.1"
+    "@tanstack/react-query": "npm:^5.40.1"
     "@testing-library/react": "npm:14.3.1"
     "@types/d3-hierarchy": "npm:3.1.7"
     "@types/node": "npm:20.12.12"

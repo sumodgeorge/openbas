@@ -30,10 +30,12 @@ const buildError = (data) => {
   return errorsExtractor(data);
 };
 
-export const simpleCall = (uri) => api().get(buildUri(uri));
-export const simplePostCall = (uri, data) => api().post(buildUri(uri), data);
-export const simplePutCall = (uri, data) => api().put(buildUri(uri), data);
-export const simpleDelCall = (uri, data) => api().delete(buildUri(uri), data);
+const apiInstance = api();
+
+export const simpleCall = (uri) => apiInstance.get(buildUri(uri));
+export const simplePostCall = (uri, data) => apiInstance.post(buildUri(uri), data);
+export const simplePutCall = (uri, data) => apiInstance.put(buildUri(uri), data);
+export const simpleDelCall = (uri, data) => apiInstance.delete(buildUri(uri), data);
 export const getReferential = (schema, uri, noloading) => (dispatch) => {
   if (noloading !== true) {
     dispatch({ type: Constants.DATA_FETCH_SUBMITTED });

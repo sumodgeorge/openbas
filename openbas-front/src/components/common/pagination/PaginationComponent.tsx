@@ -1,6 +1,7 @@
 import { Button, Chip, TablePagination, ToggleButtonGroup } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@mui/styles';
+import { useQuery } from '@tanstack/react-query';
 import SearchFilter from '../../SearchFilter';
 import type { Page } from './Page';
 import type { FilterGroup, SearchPaginationInput, Filter } from '../../../utils/api-types';
@@ -72,7 +73,7 @@ const PaginationComponent = <T extends object>({
 
   // Pagination
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(100);
+  const [rowsPerPage, setRowsPerPage] = React.useState(2);
   const [totalElements, setTotalElements] = useState(0);
 
   const handleChangePage = (
@@ -99,20 +100,40 @@ const PaginationComponent = <T extends object>({
   // Filters
   const [openMitreFilter, setOpenMitreFilter] = React.useState(false);
 
-  useEffect(() => {
-    const finalSearchPaginationInput = {
+  // Queries
+  const endpointsQuery = useQuery({
+    queryKey: ['endpoints', page, rowsPerPage, textSearch, searchPaginationInput],
+    queryFn: () => fetch({
       ...searchPaginationInput,
       textSearch,
       page,
       size: rowsPerPage,
-    };
+    }),
+  });
 
-    fetch(finalSearchPaginationInput).then((result: { data: Page<T> }) => {
-      const { data } = result;
-      setContent(data.content);
-      setTotalElements(data.totalElements);
-    });
-  }, [searchPaginationInput, page, rowsPerPage, textSearch]);
+  useEffect(() => {
+    if (endpointsQuery.data?.data) {
+      console.log('endpointsQuery.data.data', endpointsQuery.data.data);
+
+      setContent(endpointsQuery.data.data.content);
+      setTotalElements(endpointsQuery.data.data.totalElements);
+    }
+  }, [endpointsQuery.data?.data]);
+
+  // useEffect(() => {
+  //   const finalSearchPaginationInput = {
+  //     ...searchPaginationInput,
+  //     textSearch,
+  //     page,
+  //     size: rowsPerPage,
+  //   };
+  //
+  //   fetch(finalSearchPaginationInput).then((result: { data: Page<T> }) => {
+  //     const { data } = result;
+  //     setContent(data.content);
+  //     setTotalElements(data.totalElements);
+  //   });
+  // }, [searchPaginationInput, page, rowsPerPage, textSearch]);
 
   // Utils
   const computeAttackPatternNameForFilter = () => {

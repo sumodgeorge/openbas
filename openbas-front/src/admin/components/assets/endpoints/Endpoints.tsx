@@ -3,6 +3,7 @@ import { makeStyles } from '@mui/styles';
 import { List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText } from '@mui/material';
 import { DevicesOtherOutlined } from '@mui/icons-material';
 import { useSearchParams } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAppDispatch } from '../../../../utils/hooks';
 import EndpointCreation from './EndpointCreation';
 import EndpointPopover from './EndpointPopover';

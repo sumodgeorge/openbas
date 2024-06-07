@@ -1,5 +1,6 @@
 import { Dispatch } from 'redux';
-import { delReferential, getReferential, postReferential, putReferential, simplePostCall } from '../../utils/Action';
+import { AxiosResponse } from 'axios';
+import { delReferential, getReferential, postReferential, putReferential, simplePostCall, simplePutCall } from '../../utils/Action';
 import type { Endpoint, EndpointInput, SearchPaginationInput } from '../../utils/api-types';
 import { arrayOfEndpoints, endpoint } from './asset-schema';
 
@@ -30,4 +31,9 @@ export const searchEndpoints = (searchPaginationInput: SearchPaginationInput) =>
   const data = searchPaginationInput;
   const uri = '/api/endpoints/search';
   return simplePostCall(uri, data);
+};
+
+export const updateEndpoint2 = (assetId: Endpoint['asset_id'], data: EndpointInput) => {
+  const uri = `${ENDPOINT_URI}/${assetId}`;
+  return simplePutCall(uri, data);
 };

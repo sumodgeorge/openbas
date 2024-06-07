@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useFormatter } from '../../../../components/i18n';
-import type { EndpointInput } from '../../../../utils/api-types';
+import type { Endpoint, EndpointInput } from '../../../../utils/api-types';
 import EndpointForm from './EndpointForm';
 import { useAppDispatch } from '../../../../utils/hooks';
-import { deleteEndpoint, updateEndpoint } from '../../../../actions/assets/endpoint-actions';
+import { deleteEndpoint, updateEndpoint2 } from '../../../../actions/assets/endpoint-actions';
 import Drawer from '../../../../components/common/Drawer';
 import DialogDelete from '../../../../components/common/DialogDelete';
 import { updateAssetsOnAssetGroup } from '../../../../actions/asset_groups/assetgroup-action';
@@ -69,18 +70,36 @@ const EndpointPopover: React.FC<Props> = ({
     setEdition(true);
     setAnchorEl(null);
   };
-  const submitEdit = (data: EndpointInput) => {
-    dispatch(updateEndpoint(endpoint.asset_id, data)).then(
-      (result: { result: string, entities: { endpoints: Record<string, EndpointStore> } }) => {
-        if (result.entities) {
-          if (onUpdate) {
-            const endpointUpdated = result.entities.endpoints[result.result];
-            onUpdate(endpointUpdated);
-          }
-        }
-        return result;
-      },
-    );
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: ({ assetId, data }: { assetId: Endpoint['asset_id'], data: EndpointInput }) => updateEndpoint2(assetId, data),
+    onSuccess: (data) => {
+      console.log('data', data);
+      // queryClient.setQueriesData permets la manip du cache mais il y a des cas où faire de l'invalidation de datas et du coup que le système refasse une requete sera plus cohérent
+      queryClient.setQueriesData({ queryKey: ['endpoints'] }, (oldData) => {
+        console.log('oldData', oldData);
+        console.log('dfdf', oldData.data.content.findIndex((endpoint) => endpoint.asset_id === data.data.asset_id));
+        console.log('dzeazeezfdf', oldData.data.content.toSpliced(oldData.data.content.findIndex((endpoint) => endpoint.asset_id === data.data.asset_id), 1, data.data));
+        return { ...oldData, data: { ...oldData.data, content: oldData.data.content.toSpliced(oldData.data.content.findIndex((endpoint) => endpoint.asset_id === data.data.asset_id), 1, data.data) } };
+      });
+    },
+  });
+
+  const submitEdit = async (data: EndpointInput) => {
+    // dispatch(updateEndpoint(endpoint.asset_id, data)).then(
+    //   (result: { result: string, entities: { endpoints: Record<string, EndpointStore> } }) => {
+    //     if (result.entities) {
+    //       if (onUpdate) {
+    //         const endpointUpdated = result.entities.endpoints[result.result];
+    //         onUpdate(endpointUpdated);
+    //       }
+    //     }
+    //     return result;
+    //   },
+    // );
+    await mutation.mutate({ assetId: endpoint.asset_id, data });
     setEdition(false);
   };
 
