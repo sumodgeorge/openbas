@@ -38,6 +38,7 @@ const AppThemeProvider: React.FC<Props> = ({
   });
   useEffect(() => {
     document.body.setAttribute('data-theme', theme);
+    document.body.setAttribute('class', `${theme}`);
   });
 
   useEffect(() => {

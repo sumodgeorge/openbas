@@ -1120,6 +1120,18 @@ const i18n = {
       FILIGRAN: 'Filigran',
       VERIFIED: 'Verified',
       UNVERIFIED: 'Unverified',
+      // Data Table
+      'Rows per page': 'Lignes par page',
+      Rows: 'Lignes',
+      'Manage columns visibility': 'Gérer la visibilité des colonnes',
+      Asc: 'Ascendant',
+      Desc: 'Descendant',
+      Hide: 'Masquer',
+      'Go to first page': 'Aller à la première page',
+      'Go to previous page': 'Aller à la page précédente',
+      'Go to next page': 'Aller à la page suivante',
+      'Go to last page': 'Aller à la dernière page',
+      to: 'à',
     },
     en: {
       openbas_email: 'Email',

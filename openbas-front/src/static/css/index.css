@@ -1,3 +1,7 @@
+:root {
+  --font-geologica: 'Geologica';
+  --font-ibm-plex-sans: 'IBM Plex Sans';
+}
 * {
   scrollbar-width: thin;
 }

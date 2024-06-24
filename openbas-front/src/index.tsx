@@ -3,6 +3,7 @@ import '@fontsource/ibm-plex-sans';
 import '@fontsource/geologica';
 import { createRoot } from 'react-dom/client';
 import App from './app';
+import 'filigran-ui/index.css';
 import './static/css/index.css';
 import './static/css/CKEditorDark.css';
 import './static/css/CKEditorLight.css';
