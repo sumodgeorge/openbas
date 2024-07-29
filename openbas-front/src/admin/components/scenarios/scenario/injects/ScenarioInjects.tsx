@@ -21,7 +21,7 @@ import ToolBar from '../../../common/ToolBar';
 import { isNotEmptyField } from '../../../../../utils/utils';
 import injectContextForScenario from '../ScenarioContext';
 import { fetchScenarioInjectsSimple } from '../../../../../actions/injects/inject-action';
-import {Connection} from "reactflow";
+import {Connection} from "@xyflow/react";
 
 interface Props {
 
