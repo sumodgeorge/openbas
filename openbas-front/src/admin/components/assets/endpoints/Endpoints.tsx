@@ -26,6 +26,10 @@ import { datatableI18nKey, defaultColumDef, defaultTableOptions } from '../../..
 import DataTableToolbarDefault from '../../../../components/common/datatable/DataTableToolbarDefault';
 import SearchFilter from '../../../../components/SearchFilter';
 
+// FIXME: need to be fix before merging
+// When I have no result, the column moved
+// I don't have an hover effect when I have an onclick
+
 const Endpoints = () => {
   // Standard hooks
   const dispatch = useAppDispatch();
