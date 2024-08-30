@@ -71,7 +71,7 @@ public abstract class BaseInjectStatus implements Base {
   // endregion
 
   @Queryable(searchable = true, property = "title")
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "status_inject")
   @JsonIgnore
   protected Inject inject;
